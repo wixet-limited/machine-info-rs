@@ -1,0 +1,18 @@
+[package]
+name = "machine-info-rs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+sysinfo = {version = "0.26.1", default-features = false} # Disable multithread
+nvml-wrapper = "0.7.0"
+anyhow = "1.0"
+log = "0.4"
+
+
+
+fern = "0.5"
+chrono = "0.4.19"
