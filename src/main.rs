@@ -24,7 +24,6 @@ fn setup_logger() -> Result<(), fern::InitError> {
     Ok(())
 }
 
-use sysinfo::{DiskExt, CpuExt, Pid, System, SystemExt, ProcessExt, PidExt, ComponentExt, ProcessRefreshKind, CpuRefreshKind, RefreshKind};
 
 fn main() -> Result<()> {
     setup_logger()?;
