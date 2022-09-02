@@ -1,18 +1,29 @@
-use sysinfo::{DiskExt, CpuExt, Pid, System, SystemExt, ProcessExt, PidExt, ComponentExt, ProcessRefreshKind, CpuRefreshKind, RefreshKind};
+use anyhow::Result;
+use sysinfo::{DiskExt, CpuExt, System, SystemExt};
 use nvml_wrapper::NVML;
 use nvml_wrapper::enum_wrappers::device::TemperatureSensor;
 use crate::model::{SystemInfo, Processor, Disk, GraphicCard, GraphicsUsage, GraphicsProcessUtilization, SystemStatus, Process};
+use crate::monitor::Monitor;
+
 
 use log::{warn, info};
 
+/// Represents a machine. Currently you can monitor global CPU/Memory usage, processes CPU usage and the
+/// Nvidia GPU usage. You can also retrieve information about CPU, disks...
 pub struct Machine {
-    pub sys: sysinfo::System,
-    pub nvml: Option<nvml_wrapper::NVML>,
+    monitor: Monitor,
+    nvml: Option<nvml_wrapper::NVML>,
 }
 
 
 impl Machine {
-    pub fn new() -> Result<Machine, nvml_wrapper::error::NvmlError>{
+    /// Creates a new instance of Machine. If not graphic card it will warn about it but not an error
+    /// Example
+    /// ```
+    /// use machine_info::Machine;
+    /// let m = Machine::new();
+    /// ```
+    pub fn new() -> Machine{
         let nvml = match NVML::init() {
             Ok(nvml) => {
                 info!("Nvidia driver loaded");
@@ -23,16 +34,23 @@ impl Machine {
                 None
             }
         };
-        Ok(Machine{
-            sys: System::new_all(),
+        Machine{
+            monitor: Monitor::new(),
             nvml: nvml
-        })
+        }
     }
 
+    /// Retrieves full information about the computer
+    /// Example
+    /// ```
+    /// use machine_info::Machine;
+    /// let m = Machine::new();
+    /// println!("{:?}", m.system_info())
+    /// ```
     pub fn system_info(& mut self) -> SystemInfo {
-        self.sys.refresh_all();
+        let sys = System::new_all();
         //let mut processors = Vec::new();
-        let processors = self.sys.cpus();
+        let processors = sys.cpus();
         let p = &processors[0];
         let processor = Processor{
             frequency: p.frequency(),
@@ -40,15 +58,9 @@ impl Machine {
             brand: p.brand().to_string()
         };
 
-        /*for processor in self.sys.processors() {
-            processors.push(model::Processor{
-                frequency: processor.frequency(),
-                vendor: processor.vendor_id().to_string(),
-                brand: processor.brand().to_string()
-            })
-        }*/
+
         let mut disks = Vec::new();
-        for disk in self.sys.disks() {
+        for disk in sys.disks() {
             disks.push(Disk{
                 name: disk.name().to_str().unwrap().to_string(),
                 fs: String::from_utf8(disk.file_system().to_vec()).unwrap(),
@@ -90,11 +102,11 @@ impl Machine {
         
 
         SystemInfo {
-            os_name: self.sys.name().unwrap(),
-            kernel_version: self.sys.kernel_version().unwrap(),
-            os_version: self.sys.os_version().unwrap(),
-            hostname: self.sys.host_name().unwrap(),
-            memory: self.sys.total_memory(),
+            os_name: sys.name().unwrap(),
+            kernel_version: sys.kernel_version().unwrap(),
+            os_version: sys.os_version().unwrap(),
+            hostname: sys.host_name().unwrap(),
+            memory: sys.total_memory(),
             driver_version,
             nvml_version,
             cuda_version,
@@ -115,6 +127,13 @@ impl Machine {
             */
     }*/
 
+    /// The current usage of all graphic cards (if any)
+    /// Example
+    /// ```
+    /// use machine_info::Machine;
+    /// let m = Machine::new();
+    /// println!("{:?}", m.graphics_status())
+    /// ```
     pub fn graphics_status(&self) -> Vec<GraphicsUsage> {
         let mut cards = Vec::new();
         if let Some(nvml) = &self.nvml {
@@ -148,39 +167,77 @@ impl Machine {
         
     }
 
-    pub fn processes_status(& mut self, pids: &Vec<i32>) -> Vec<Process> {
-        let mut processes = Vec::with_capacity(pids.len());
 
-        for pid in pids {
-            let p = Pid::from(*pid);
-            //let res = self.sys.refresh_process_specifics(Pid::from(7620), ProcessRefreshKind::new().with_cpu());
-            if self.sys.refresh_process_specifics(p, ProcessRefreshKind::everything()) {
-                let p = self.sys.process(p).unwrap();
-                processes.push(Process{
-                    pid: *pid,
-                    cpu: p.cpu_usage(),
-                    memory: p.memory(),
-                    name: p.name().to_owned(),
-                })
-            } else {
-                warn!("Pid {} does not exist", pid);
-            }
-            
-        }
-        processes
+    /// To calculate the CPU usage of a process we have to keep track in time the process so first we have to register the process.
+    /// You need to know the PID of your process and use it as parameters. In case you provide an invalid PID it will return error
+    /// Example
+    /// ```
+    /// use machine_info::Machine;
+    /// let m = Machine::new();
+    /// let process_pid = 3218;
+    /// m.track_process(process_pid)
+    /// ```
+    pub fn track_process(&mut self, pid: i32) -> Result<()>{
+        self.monitor.track_process(pid)
     }
 
-    pub fn system_status(& mut self) -> SystemStatus {
-        self.sys.refresh_memory();
-        let memory = self.sys.used_memory();
-        self.sys.refresh_cpu_specifics(CpuRefreshKind::new().with_cpu_usage());
-        let cpu = self.sys.global_cpu_info().cpu_usage();   
+    /// Once we dont need to track a process it is recommended to not keep using resources on it. You should know the PID of your process.
+    /// If the PID was not registered before, it will just do nothing
+    /// Example
+    /// ```
+    /// use machine_info::Machine;
+    /// let m = Machine::new();
+    /// let process_pid = 3218;
+    /// m.track_process(process_pid)
+    /// m.untrack_process(process_pid)
+    /// ```
+    pub fn untrack_process(&mut self, pid: i32) {
+        self.monitor.untrack_process(pid);
+    }
 
-        let processes = vec![];
-        SystemStatus {
+    /// The CPU usage of all tracked processes since the last call. So if you call it every 10 seconds, you will
+    /// get the CPU usage during the last 10 seconds. More calls will make the value more accurate but also more expensive
+    /// Example
+    /// ```
+    /// use machine_info::Machine;
+    /// use std::{thread, time};
+    /// 
+    /// let m = Machine::new();
+    /// m.track_process(3218)
+    /// m.track_process(4467)
+    /// loop {   
+    ///   let status = m.processes_status();
+    ///   println!("{:?}", status);
+    ///   thread::sleep(time::Duration::from_millis(1000));
+    /// }
+    /// 
+    /// ```
+    pub fn processes_status(& mut self) -> Vec<Process> {
+        self.monitor.next_processes().iter().map(|(pid, cpu)| Process{pid:*pid, cpu:*cpu}).collect::<Vec<Process>>()
+    }
+
+    /// The CPU and memory usage. For the CPU, it is the same as for `processes_status`. For the memory it returs the amount
+    /// a this moment
+    /// Example
+    /// ```
+    /// use machine_info::Machine;
+    /// use std::{thread, time};
+    /// 
+    /// let m = Machine::new();
+    /// m.track_process(3218)
+    /// m.track_process(4467)
+    /// loop {   
+    ///   let status = m.system_status();
+    ///   println!("{:?}", status);
+    ///   thread::sleep(time::Duration::from_millis(1000));
+    /// }
+    /// 
+    /// ```
+    pub fn system_status(& mut self) -> Result<SystemStatus> {
+        let (cpu, memory) = self.monitor.next()?;
+        Ok(SystemStatus {
             memory,
             cpu,
-            processes
-        }
+        })
     }
 }

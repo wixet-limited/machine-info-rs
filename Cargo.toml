@@ -1,9 +1,15 @@
 [package]
-name = "machine-info-rs"
-version = "0.1.0"
+name = "machine-info"
+version = "1.0.0"
 edition = "2021"
+license-file = "LICENSE"
+description = "CPU, GPU and memory monitor. Use it to track resources usage"
+readme = "README.md"
+repository = "https://github.com/wixet-limited/machine-info-rs"
+homepage = "https://wixet.com"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+categories = ["system", "monitoring"]
+keywords = ["monitor", "nvidia", "gpu", "cpu", "memory"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
@@ -11,8 +17,3 @@ sysinfo = {version = "0.26.1", default-features = false} # Disable multithread
 nvml-wrapper = "0.7.0"
 anyhow = "1.0"
 log = "0.4"
-
-
-
-fern = "0.5"
-chrono = "0.4.19"
