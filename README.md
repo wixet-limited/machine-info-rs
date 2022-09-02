@@ -9,7 +9,7 @@ Get information about your machine and monitor the resources usage.
 [crates-badge]: https://img.shields.io/crates/v/machine-info.svg
 [crates-url]: https://crates.io/crates/machine-info
 [apache-badge]: https://img.shields.io/badge/license-apache2-blue.svg
-[apache-url]: https://github.com/wixet-limited/machine-info/blob/master/LICENSE
+[apache-url]: https://github.com/wixet-limited/machine-info-rs/blob/master/LICENSE
 
 [Website](https://wixet.com) |
 [API Docs](https://docs.rs/machine-info/latest/machine-info)
@@ -79,4 +79,4 @@ several other libraries, including:
 
 This project is licensed under the [Apache 2 license].
 
-[Apache 2 license]: https://github.com/wixet-limited/machine-info/blob/master/LICENSE
+[Apache 2 license]: https://github.com/wixet-limited/machine-info-rs/blob/master/LICENSE
