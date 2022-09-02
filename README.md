@@ -70,9 +70,11 @@ In addition to the crates in this repository, the Tokio project also maintains
 several other libraries, including:
 
 * [`sysinfo`]: sysinfo is a crate used to get a system’s information.
+* [`nvml-wrapper`]: A safe and ergonomic Rust wrapper for the NVIDIA Management Library (NVML)
 
 
 [`sysinfo`]: https://github.com/GuillaumeGomez/sysinfo
+[`nvml-wrapper`]: https://github.com/Cldfire/nvml-wrapper
 
 
 ## License
