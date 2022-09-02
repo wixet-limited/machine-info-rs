@@ -79,4 +79,4 @@ several other libraries, including:
 
 This project is licensed under the [Apache 2 license].
 
-[MIT license]: https://github.com/wixet-limited/machine-info/blob/master/LICENSE
+[Apache 2 license]: https://github.com/wixet-limited/machine-info/blob/master/LICENSE
