@@ -8,9 +8,8 @@ Get information about your machine and monitor the resources usage.
 
 [crates-badge]: https://img.shields.io/crates/v/machine-info.svg
 [crates-url]: https://crates.io/crates/machine-info
-[apache-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[apache-badge]: https://img.shields.io/badge/license-apache2-blue.svg
 [apache-url]: https://github.com/wixet-limited/machine-info/blob/master/LICENSE
-[actions-badge]: https://github.com/tokio-rs/tokio/workflows/CI/badge.svg
 
 [Website](https://wixet.com) |
 [API Docs](https://docs.rs/machine-info/latest/machine-info)
