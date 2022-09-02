@@ -8,7 +8,7 @@ readme = "README.md"
 repository = "https://github.com/wixet-limited/machine-info-rs"
 homepage = "https://wixet.com"
 
-categories = ["system", "monitoring"]
+categories = ["os"]
 keywords = ["monitor", "nvidia", "gpu", "cpu", "memory"]
 
 [dependencies]
