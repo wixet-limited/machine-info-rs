@@ -12,16 +12,6 @@ mod model;
 mod monitor;
 
 pub use machine::Machine;
-pub use model::{Disk, DiskUsage, Process, GraphicsProcessUtilization, SystemStatus, GraphicsUsage, Processor, GraphicCard};
+pub use model::{Disk, DiskUsage, Process, GraphicsProcessUtilization, SystemStatus, GraphicsUsage, Processor, GraphicCard, SystemInfo};
 
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
