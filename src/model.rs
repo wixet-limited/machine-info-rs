@@ -92,7 +92,9 @@ pub struct SystemInfo {
     /// List of graphic cards
     pub graphics: Vec<GraphicCard>,
     /// List of available disks
-    pub disks: Vec<Disk>
+    pub disks: Vec<Disk>,
+    /// List of available cameras
+    pub cameras: Vec<Camera>
 }
 
 /// Information about microprocessor
@@ -136,4 +138,13 @@ pub struct Disk {
     pub available: u64,
     /// Total size
     pub size: u64
+}
+
+/// Connected camera information
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Camera {
+    /// The camera name
+    pub name: String,
+    /// Camera path like /dev/video0
+    pub path: String
 }

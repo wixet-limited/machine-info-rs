@@ -12,6 +12,6 @@ mod model;
 mod monitor;
 
 pub use machine::Machine;
-pub use model::{Disk, DiskUsage, Process, GraphicsProcessUtilization, SystemStatus, GraphicsUsage, Processor, GraphicCard, SystemInfo};
+pub use model::{Disk, DiskUsage, Process, GraphicsProcessUtilization, SystemStatus, GraphicsUsage, Processor, GraphicCard, SystemInfo, Camera};
 
 

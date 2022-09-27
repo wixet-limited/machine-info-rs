@@ -2,11 +2,11 @@ use anyhow::Result;
 use sysinfo::{DiskExt, CpuExt, System, SystemExt};
 use nvml_wrapper::NVML;
 use nvml_wrapper::enum_wrappers::device::TemperatureSensor;
-use crate::model::{SystemInfo, Processor, Disk, GraphicCard, GraphicsUsage, GraphicsProcessUtilization, SystemStatus, Process};
-use crate::monitor::Monitor;
-
-
+use v4l::context;
+use std::panic;
 use log::{warn, info};
+use crate::model::{SystemInfo, Processor, Disk, GraphicCard, GraphicsUsage, GraphicsProcessUtilization, SystemStatus, Process, Camera};
+use crate::monitor::Monitor;
 
 /// Represents a machine. Currently you can monitor global CPU/Memory usage, processes CPU usage and the
 /// Nvidia GPU usage. You can also retrieve information about CPU, disks...
@@ -113,7 +113,8 @@ impl Machine {
             processor,
             total_processors: processors.len(),
             graphics: cards,
-            disks
+            disks,
+            cameras: self.list_cameras()
         }
     }
 
@@ -239,5 +240,38 @@ impl Machine {
             memory,
             cpu,
         })
+    }
+
+    /// List of attached cameras to the machine
+    /// Example
+    /// ```
+    /// use machine_info::Machine;
+    /// 
+    /// let m = Machine::new(); 
+    /// println!("{:?}", m.list_cameras());
+    /// 
+    /// ```
+    pub fn list_cameras(&self) -> Vec<Camera> {
+        let mut cameras = vec![];
+    
+        // I catch panic because the library uses unwrap internally and sometimes the device has no name
+        for dev in context::enum_devices() {
+            let name = panic::catch_unwind(|| {
+                dev.name().unwrap()
+            });
+        
+            let name = match name {
+                Ok(name) => name,
+                Err(_) => "Unknown".to_owned()
+                
+            };
+            
+            cameras.push(Camera {
+                name,
+                path: dev.path().as_os_str().to_str().unwrap_or("Unknown").to_owned()
+            })
+        }
+        cameras
+    
     }
 }
