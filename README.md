@@ -31,7 +31,7 @@ Just a simple monitoring
 
 ```toml
 [dependencies]
-machine-info = "1.0.0"
+machine-info = "1.0.2"
 ```
 Put this in your main.rs:
 
