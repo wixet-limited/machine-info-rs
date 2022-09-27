@@ -31,7 +31,7 @@ Just a simple monitoring
 
 ```toml
 [dependencies]
-machine-info = "1.0.2"
+machine-info = "1.0.4"
 ```
 Put this in your main.rs:
 
@@ -55,22 +55,25 @@ fn main() {
         thread::sleep(time::Duration::from_millis(1000));
     }
 }
-
-
 ```
-
+You probably need to install libclang-dev package
+```
+sudo apt-get install libclang-dev
+```
 
 ## Related Projects
 
-In addition to the crates in this repository, the Tokio project also maintains
-several other libraries, including:
+This crate is based on other awesome libraries like:
 
 * [`sysinfo`]: sysinfo is a crate used to get a system’s information.
 * [`nvml-wrapper`]: A safe and ergonomic Rust wrapper for the NVIDIA Management Library (NVML)
 
+* [`libv4l-rs`]: Safe video4linux (v4l) bindings
+
 
 [`sysinfo`]: https://github.com/GuillaumeGomez/sysinfo
 [`nvml-wrapper`]: https://github.com/Cldfire/nvml-wrapper
+[`libv4l-rs`]: https://github.com/raymanfx/libv4l-rs
 
 
 ## License
