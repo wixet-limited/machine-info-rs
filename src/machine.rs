@@ -114,7 +114,7 @@ impl Machine {
             total_processors: processors.len(),
             graphics: cards,
             disks,
-            cameras: self.list_cameras()
+            cameras: Machine::list_cameras()
         }
     }
 
@@ -247,11 +247,10 @@ impl Machine {
     /// ```
     /// use machine_info::Machine;
     /// 
-    /// let m = Machine::new(); 
-    /// println!("{:?}", m.list_cameras());
+    /// println!("{:?}", Machine::list_cameras());
     /// 
     /// ```
-    pub fn list_cameras(&self) -> Vec<Camera> {
+    pub fn list_cameras() -> Vec<Camera> {
         let mut cameras = vec![];
     
         // I catch panic because the library uses unwrap internally and sometimes the device has no name
