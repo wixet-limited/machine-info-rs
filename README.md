@@ -21,7 +21,7 @@ of them but this crate adds a feature to constantly monitor the system without a
 overhead. 
 
 You can probe your system for CPU or memory usage once per second and your machine performance will not be affected at all. Other crates consumed like 7-10% of CPU which
-is not acceptable. But to be fair, these other creates are doing many other things apart from getting the cpu/memory usage.
+is not acceptable. But to be fair, these other crates are doing many other things apart from getting the cpu/memory usage.
 
 This crate focus only on this, nothing else. Limited but lightweight. If you want a full featured crate better use other one.
 
@@ -37,16 +37,14 @@ Put this in your main.rs:
 
 ```rust
 use machine_info::Machine;
-use anyhow::Result;
-
 use std::{thread, time};
 
 
-fn main() -> Result<()> {
+fn main() {
     let mut m = Machine::new();
     // Please use a real PIDs!
-    m.track_process(132801)?;
-    m.track_process(32930)?;
+    m.track_process(132801).unwrap();
+    m.track_process(32930).unwrap();
     
     for _ in 1..100 {
         let processes = m.processes_status();
@@ -56,8 +54,6 @@ fn main() -> Result<()> {
         
         thread::sleep(time::Duration::from_millis(1000));
     }
-
-    Ok(())
 }
 
 
