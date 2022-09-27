@@ -9,7 +9,7 @@ repository = "https://github.com/wixet-limited/machine-info-rs"
 homepage = "https://wixet.com"
 
 categories = ["os"]
-keywords = ["monitor", "nvidia", "gpu", "cpu", "memory", "v4l", "v4l2", "camera"]
+keywords = ["monitor", "nvidia", "gpu", "cpu", "memory"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
