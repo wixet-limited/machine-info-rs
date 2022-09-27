@@ -5,6 +5,7 @@ use std::time::SystemTime;
 use std::collections::HashMap;
 use log::warn;
 
+#[derive(Debug)]
 pub struct Monitor {
     last_cpu: Cpu,
     last_processes: HashMap<i32, Process>
@@ -68,29 +69,31 @@ impl Monitor {
     }
 }
 
+#[derive(Debug)]
 struct Cpu {
-    values: Vec<i32>
+    values: Vec<u64>
 }
 
 impl Cpu {
     pub fn from_file(file: impl std::io::Read) -> Result<Cpu> {
         let line = io::BufReader::new(file).lines().next().unwrap()?;
         let re = line.split(" ").collect::<Vec<&str>>();
-        Ok(Cpu{values: re[2..].iter().map(|&e| e.parse::<i32>().unwrap()).collect::<Vec<i32>>()})
+        Ok(Cpu{values: re[2..].iter().map(|&e| e.parse::<u64>().unwrap()).collect::<Vec<u64>>()})
     }
 
     pub fn usage(&self, last: &Cpu) -> i32 {
-        let last_sum = last.values.iter().sum::<i32>();
-        let current_sum = self.values.iter().sum::<i32>();
+        let last_sum = last.values.iter().sum::<u64>();
+        let current_sum = self.values.iter().sum::<u64>();
         let delta = current_sum - last_sum;
         let idle = self.values[3] - last.values[3];
         let used = delta - idle;
         let usage = 100 * used / delta;
-        usage
+        usage as i32
     }
 
 }
 
+#[derive(Debug)]
 struct Process {
     pub total_time: i32,
     pub when: SystemTime,
