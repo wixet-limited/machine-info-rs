@@ -31,7 +31,7 @@ Just a simple monitoring
 
 ```toml
 [dependencies]
-machine-info = "1.0.4"
+machine-info = "1.0.6"
 ```
 Put this in your main.rs:
 
@@ -56,7 +56,17 @@ fn main() {
     }
 }
 ```
-You probably need to install libclang-dev package
+
+## Features
+
+You can compile the library with `v4l` support for cameras scanning.
+
+```toml
+[dependencies]
+machine-info = { version = "1.0.6", features = ["v4l"] }
+```
+
+Your probably need to install libclang-dev package
 ```
 sudo apt-get install libclang-dev
 ```
@@ -67,7 +77,6 @@ This crate is based on other awesome libraries like:
 
 * [`sysinfo`]: sysinfo is a crate used to get a system’s information.
 * [`nvml-wrapper`]: A safe and ergonomic Rust wrapper for the NVIDIA Management Library (NVML)
-
 * [`libv4l-rs`]: Safe video4linux (v4l) bindings
 
 

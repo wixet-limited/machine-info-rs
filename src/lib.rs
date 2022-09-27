@@ -11,6 +11,9 @@ mod machine;
 mod model;
 mod monitor;
 
+#[cfg(feature = "v4l")]
+pub mod camera;
+
 pub use machine::Machine;
 pub use model::{Disk, DiskUsage, Process, GraphicsProcessUtilization, SystemStatus, GraphicsUsage, Processor, GraphicCard, SystemInfo, Camera};
 

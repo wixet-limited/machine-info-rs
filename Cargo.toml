@@ -1,6 +1,6 @@
 [package]
 name = "machine-info"
-version = "1.0.5"
+version = "1.0.6"
 edition = "2021"
 license-file = "LICENSE"
 description = "CPU, GPU and memory monitor. Use it to track resources usage"
@@ -17,4 +17,8 @@ sysinfo = {version = "0.26.1", default-features = false} # Disable multithread
 nvml-wrapper = "0.7.0"
 anyhow = "1.0"
 log = "0.4"
-v4l = "0.13.0"
+v4l = { version = "0.13.0", optional = true}
+
+
+[features]
+v4l = ["dep:v4l"]
