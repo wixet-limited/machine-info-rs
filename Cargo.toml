@@ -1,6 +1,6 @@
 [package]
 name = "machine-info"
-version = "1.0.7"
+version = "1.0.8"
 edition = "2021"
 license-file = "LICENSE"
 description = "CPU, GPU and memory monitor. Use it to track resources usage"

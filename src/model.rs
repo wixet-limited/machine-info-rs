@@ -93,6 +93,8 @@ pub struct SystemInfo {
     pub cameras: Vec<Camera>,
     /// Nvidia driver info
     pub nvidia: Option<NvidiaInfo>,
+    /// If the machine supports vaapi
+    pub vaapi: bool,
     /// Machine model. Some machines has special models like rpi
     pub model: Option<String>
 }

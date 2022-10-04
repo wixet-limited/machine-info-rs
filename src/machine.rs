@@ -118,6 +118,7 @@ impl Machine {
             None
         };
         
+        let vaapi = Path::new("/dev/dri/renderD128").exists();
 
         SystemInfo {
             os_name: sys.name().unwrap(),
@@ -127,6 +128,7 @@ impl Machine {
             hostname: sys.host_name().unwrap(),
             memory: sys.total_memory(),
             nvidia,
+            vaapi,
             processor,
             total_processors: sys.cpus().len(),
             graphics: cards,
