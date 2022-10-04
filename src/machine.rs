@@ -5,6 +5,7 @@ use nvml_wrapper::enum_wrappers::device::TemperatureSensor;
 use log::{debug, info};
 use crate::model::{SystemInfo, Processor, Disk, GraphicCard, GraphicsUsage, GraphicsProcessUtilization, SystemStatus, Process, Camera, NvidiaInfo};
 use crate::monitor::Monitor;
+use std::path::Path;
 
 #[cfg(feature = "v4l")]
 use crate::camera::list_cameras;
@@ -56,12 +57,11 @@ impl Machine {
     pub fn system_info(& mut self) -> SystemInfo {
         let sys = System::new_all();
         //let mut processors = Vec::new();
-        let processors = sys.cpus();
-        let p = &processors[0];
+        let processor = sys.global_cpu_info();
         let processor = Processor{
-            frequency: p.frequency(),
-            vendor: p.vendor_id().to_string(),
-            brand: p.brand().to_string()
+            frequency: processor.frequency(),
+            vendor: processor.vendor_id().to_string(),
+            brand: processor.brand().to_string()
         };
 
 
@@ -110,19 +110,29 @@ impl Machine {
             None
         };
         
+        // Getting the model
+        let model_path = Path::new("/sys/firmware/devicetree/base/model");
+        let model = if model_path.exists() {
+            Some(std::fs::read_to_string(model_path).unwrap())
+        } else {
+            None
+        };
+        
 
         SystemInfo {
             os_name: sys.name().unwrap(),
             kernel_version: sys.kernel_version().unwrap(),
             os_version: sys.os_version().unwrap(),
+            distribution: sys.distribution_id(),
             hostname: sys.host_name().unwrap(),
             memory: sys.total_memory(),
             nvidia,
             processor,
-            total_processors: processors.len(),
+            total_processors: sys.cpus().len(),
             graphics: cards,
             disks,
-            cameras: list_cameras()
+            cameras: list_cameras(),
+            model
         }
     }
 

@@ -1,6 +1,6 @@
 [package]
 name = "machine-info"
-version = "1.0.6"
+version = "1.0.7"
 edition = "2021"
 license-file = "LICENSE"
 description = "CPU, GPU and memory monitor. Use it to track resources usage"
@@ -13,7 +13,7 @@ keywords = ["monitor", "nvidia", "gpu", "cpu", "memory"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
-sysinfo = {version = "0.26.1", default-features = false} # Disable multithread
+sysinfo = {version = "0.26.4", default-features = false} # Disable multithread
 nvml-wrapper = "0.7.0"
 anyhow = "1.0"
 log = "0.4"

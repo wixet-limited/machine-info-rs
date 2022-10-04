@@ -77,6 +77,8 @@ pub struct SystemInfo {
     pub os_version: String,
     /// System hostname
     pub hostname: String,
+    /// Distribution id like ubuntu, neon, raspbian...
+    pub distribution: String,
     /// Total memory of the machine
     pub memory: u64,
     /// Microprocessor description
@@ -91,6 +93,8 @@ pub struct SystemInfo {
     pub cameras: Vec<Camera>,
     /// Nvidia driver info
     pub nvidia: Option<NvidiaInfo>,
+    /// Machine model. Some machines has special models like rpi
+    pub model: Option<String>
 }
 
 /// Information about microprocessor
