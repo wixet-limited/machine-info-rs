@@ -79,12 +79,6 @@ pub struct SystemInfo {
     pub hostname: String,
     /// Total memory of the machine
     pub memory: u64,
-    /// Nvidia drivers
-    pub driver_version: Option<String>,
-    /// NVML version
-    pub nvml_version: Option<String>,
-    /// Cuda version
-    pub cuda_version: Option<i32>,
     /// Microprocessor description
     pub processor: Processor,
     /// Total amount of processors
@@ -94,7 +88,9 @@ pub struct SystemInfo {
     /// List of available disks
     pub disks: Vec<Disk>,
     /// List of available cameras
-    pub cameras: Vec<Camera>
+    pub cameras: Vec<Camera>,
+    /// Nvidia driver info
+    pub nvidia: Option<NvidiaInfo>,
 }
 
 /// Information about microprocessor
@@ -147,4 +143,15 @@ pub struct Camera {
     pub name: String,
     /// Camera path like /dev/video0
     pub path: String
+}
+
+/// Nvidia drivers configuration
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NvidiaInfo {
+     /// Nvidia drivers
+     pub driver_version: String,
+     /// NVML version
+     pub nvml_version: String,
+     /// Cuda version
+     pub cuda_version: i32,
 }

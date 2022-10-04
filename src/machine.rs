@@ -2,8 +2,8 @@ use anyhow::Result;
 use sysinfo::{DiskExt, CpuExt, System, SystemExt};
 use nvml_wrapper::NVML;
 use nvml_wrapper::enum_wrappers::device::TemperatureSensor;
-use log::{warn, info};
-use crate::model::{SystemInfo, Processor, Disk, GraphicCard, GraphicsUsage, GraphicsProcessUtilization, SystemStatus, Process, Camera};
+use log::{debug, info};
+use crate::model::{SystemInfo, Processor, Disk, GraphicCard, GraphicsUsage, GraphicsProcessUtilization, SystemStatus, Process, Camera, NvidiaInfo};
 use crate::monitor::Monitor;
 
 #[cfg(feature = "v4l")]
@@ -36,7 +36,7 @@ impl Machine {
                 Some(nvml)
             },
             Err(error) => {
-                warn!("Nvidia not available because {}", error);
+                debug!("Nvidia not available because {}", error);
                 None
             }
         };
@@ -45,7 +45,7 @@ impl Machine {
             nvml: nvml
         }
     }
-
+    
     /// Retrieves full information about the computer
     /// Example
     /// ```
@@ -82,7 +82,7 @@ impl Machine {
         }
 
         let mut cards = Vec::new();
-        let (driver_version, nvml_version, cuda_version) = if let Some(nvml) = &self.nvml {
+        let nvidia = if let Some(nvml) = &self.nvml {
             for n in 0..nvml.device_count().unwrap() {
                 let device = nvml.device_by_index(n).unwrap();
                 cards.push(GraphicCard{
@@ -101,9 +101,13 @@ impl Machine {
                     temperature: device.temperature(nvml_wrapper::enum_wrappers::device::TemperatureSensor::Gpu).unwrap()
                 });
             }
-            (Some(nvml.sys_driver_version().unwrap()), Some(nvml.sys_nvml_version().unwrap()), Some(nvml.sys_cuda_driver_version().unwrap()))
+            Some(NvidiaInfo {
+                driver_version: nvml.sys_driver_version().unwrap(),
+                nvml_version: nvml.sys_nvml_version().unwrap(),
+                cuda_version: nvml.sys_cuda_driver_version().unwrap()
+            })
         } else {
-            (None, None, None)
+            None
         };
         
 
@@ -113,9 +117,7 @@ impl Machine {
             os_version: sys.os_version().unwrap(),
             hostname: sys.host_name().unwrap(),
             memory: sys.total_memory(),
-            driver_version,
-            nvml_version,
-            cuda_version,
+            nvidia,
             processor,
             total_processors: processors.len(),
             graphics: cards,
