@@ -2,6 +2,7 @@ use serde::{Serialize, Deserialize};
 
 /// System status
 #[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct DiskUsage {
     /// Name of the disk
     pub name: String,
@@ -13,6 +14,7 @@ pub struct DiskUsage {
 
 /// Process usage
 #[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct Process {
     /// Process identificator
     pub pid: i32,
@@ -23,6 +25,7 @@ pub struct Process {
 
 /// Graphic card usage by process
 #[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GraphicsProcessUtilization {
     /// Process identificator
     pub pid: u32,
@@ -38,6 +41,7 @@ pub struct GraphicsProcessUtilization {
 
 /// Graphic card usage summary
 #[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GraphicsUsage {
     /// Graphic card id
     pub id: String,
@@ -59,6 +63,7 @@ pub struct GraphicsUsage {
 
 /// System global utilization
 #[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct SystemStatus {
     /// Total memory used
     pub memory: i32,
@@ -68,6 +73,7 @@ pub struct SystemStatus {
 
 /// Summary of the system
 #[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct SystemInfo {
     /// Operating system name
     pub os_name: String,
@@ -101,6 +107,7 @@ pub struct SystemInfo {
 
 /// Information about microprocessor
 #[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct Processor {
     /// Processor clock speed
     pub frequency: u64,
@@ -112,6 +119,7 @@ pub struct Processor {
 
 /// Information about a graphic card
 #[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct GraphicCard {
     /// Device id
     pub id: String,
@@ -127,6 +135,7 @@ pub struct GraphicCard {
 
 /// Information about a hard disk
 #[derive(Deserialize, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct Disk {
     /// Disk name
     pub name: String,
@@ -144,6 +153,7 @@ pub struct Disk {
 
 /// Connected camera information
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Camera {
     /// The camera name
     pub name: String,
@@ -153,6 +163,7 @@ pub struct Camera {
 
 /// Nvidia drivers configuration
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NvidiaInfo {
      /// Nvidia drivers
      pub driver_version: String,
