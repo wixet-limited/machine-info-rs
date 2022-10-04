@@ -1,6 +1,6 @@
 use anyhow::Result;
 use sysinfo::{DiskExt, CpuExt, System, SystemExt};
-use nvml_wrapper::NVML;
+use nvml_wrapper::Nvml;
 use nvml_wrapper::enum_wrappers::device::TemperatureSensor;
 use log::{debug, info};
 use crate::model::{SystemInfo, Processor, Disk, GraphicCard, GraphicsUsage, GraphicsProcessUtilization, SystemStatus, Process, Camera, NvidiaInfo};
@@ -19,7 +19,7 @@ fn list_cameras() -> Vec<Camera> {
 /// Nvidia GPU usage. You can also retrieve information about CPU, disks...
 pub struct Machine {
     monitor: Monitor,
-    nvml: Option<nvml_wrapper::NVML>,
+    nvml: Option<nvml_wrapper::Nvml>,
 }
 
 
@@ -31,7 +31,7 @@ impl Machine {
     /// let m = Machine::new();
     /// ```
     pub fn new() -> Machine{
-        let nvml = match NVML::init() {
+        let nvml = match Nvml::init() {
             Ok(nvml) => {
                 info!("Nvidia driver loaded");
                 Some(nvml)
