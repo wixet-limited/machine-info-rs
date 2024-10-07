@@ -161,14 +161,17 @@ impl Machine {
             for n in 0..nvml.device_count().unwrap() {
                 let device = nvml.device_by_index(n).unwrap();
                 let mut processes = Vec::new();
-                for p in device.process_utilization_stats(None).unwrap() {
-                    processes.push(GraphicsProcessUtilization{
-                         pid: p.pid,
-                        gpu: p.sm_util,
-                        memory: p.mem_util,
-                        encoder: p.enc_util,
-                        decoder: p.dec_util
-                    });
+                let stats = device.process_utilization_stats(None);
+                if stats.is_ok() {
+                    for p in device.process_utilization_stats(None).unwrap() {
+                        processes.push(GraphicsProcessUtilization{
+                            pid: p.pid,
+                            gpu: p.sm_util,
+                            memory: p.mem_util,
+                            encoder: p.enc_util,
+                            decoder: p.dec_util
+                        });
+                    }
                 }
     
                 cards.push(GraphicsUsage {
