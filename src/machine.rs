@@ -163,7 +163,7 @@ impl Machine {
                 let mut processes = Vec::new();
                 let stats = device.process_utilization_stats(None);
                 if stats.is_ok() {
-                    for p in device.process_utilization_stats(None).unwrap() {
+                    for p in stats.unwrap() {
                         processes.push(GraphicsProcessUtilization{
                             pid: p.pid,
                             gpu: p.sm_util,
